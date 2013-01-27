@@ -1,0 +1,9 @@
+name = Json data
+description = json data for data
+package = "custom"
+core = 7.x
+
+files[] = json_data.module
+
+core = "7.x"
+version = "7.x-1.0"

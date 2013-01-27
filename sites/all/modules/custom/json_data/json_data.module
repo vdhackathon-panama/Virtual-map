@@ -1,0 +1,42 @@
+<?php
+
+function json_data_menu() {
+
+    $items['jsondata'] = array(
+      'page callback' => 'json_data_process',
+      'access callback' => TRUE
+    );
+    return $items;
+}
+
+function json_data_process () {
+
+  $results = array();
+
+  $provincia_vid = 2;
+  $tipos_violencia_vid = 3;
+  $provincias = taxonomy_get_tree($provincia_vid);
+  $tipos_violencia = taxonomy_get_tree($tipos_violencia_vid);
+  foreach ($provincias as $provincia) {
+    $provincia_temp = array();
+    $provincia_temp['id'] = $provincia->name;
+
+    foreach ($tipos_violencia as $tipo_de_violencia) {
+      $query = db_select('field_data_field_qu_tipo_de_violencia_has_s', 'a');
+      $query->leftJoin('field_data_field_lugar_donde_ocurri_', 'b', 'a.entity_id = b.entity_id');
+      $query->condition('a.field_qu_tipo_de_violencia_has_s_tid', $tipo_de_violencia->tid);
+      $query->condition('b.field_lugar_donde_ocurri__tid', $provincia->tid);
+      $query->fields('a', array('entity_id'));
+
+      $result = $query->execute();
+      $num_of_results = $result->rowCount();
+
+      $provincia_temp[$tipo_de_violencia->name] = $num_of_results;
+    }
+
+    $results['provincias'][] = $provincia_temp;
+  }
+  $encoded = json_encode($results);
+
+  return $encoded;
+}

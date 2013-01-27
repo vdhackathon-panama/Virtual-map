@@ -1,0 +1,28 @@
+<html><body>
+  <div id="mapdiv"></div>
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script>
+	var lat=8.67198;
+        var lon=-79.71751;
+
+    map = new OpenLayers.Map("mapdiv");
+    map.addLayer(new OpenLayers.Layer.OSM());
+ 
+    var lonLat = new OpenLayers.LonLat( lon ,lat )
+          .transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            map.getProjectionObject() // to Spherical Mercator Projection
+          );
+ 
+    var zoom=7;
+ 
+    //var markers = new OpenLayers.Layer.Markers( "Markers" );
+    //map.addLayer(markers);
+ 
+    //markers.addMarker(new OpenLayers.Marker(lonLat));
+    var text = new OpenLayers.Layer.Text( "Casos", {location: "./data.txt"} );
+            map.addLayer(text);
+ 
+    map.setCenter (lonLat, zoom);
+  </script>
+</body></html>
